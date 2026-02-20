@@ -70,13 +70,13 @@ func NetStatus() (string, error) {
 	case 14:
 		return "ERROR_UDP_DISABLED_AND_TCP_UNSET", fmt.Errorf("UDP disabled and TCP unset")
 	default:
-		return  "unexpected result", fmt.Errorf("unexpected result  %d", result)
+		return "unexpected result", fmt.Errorf("unexpected result  %d", result)
 	}
 }
 
 // Reseeding checks if the I2P Router is reseeding
 func Reseeding() (bool, error) {
-	retpre, err := Call("Routerinfo", map[string]interface{}{
+	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.netdb.isreseeding": nil,
 		"Token":                        token,
 	})
@@ -84,5 +84,71 @@ func Reseeding() (bool, error) {
 		return false, err
 	}
 	result := retpre["i2p.router.netdb.isreseeding"].(bool)
+	return result, nil
+}
+
+// Incoming bandwidth per second
+func IncomingBW() (int, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.net.bw.inbound.1s": nil,
+		"Token":                        token,
+	})
+	if err != nil {
+		return -1, err
+	}
+	result := int(retpre["i2p.router.net.bw.inbound.1s"].(float64))
+	return result, nil
+}
+
+// Outgoing bandwidth per second
+func OutgoingBw() (int, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.net.bw.outbound.1s": nil,
+		"Token":                         token,
+	})
+	if err != nil {
+		return -1, err
+	}
+	result := int(retpre["i2p.router.net.bw.outbound.1s"].(float64))
+	return result, nil
+}
+
+// Uptime of the router
+func UpTime() (int64, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.uptime": nil,
+		"Token":             token,
+	})
+	if err != nil {
+		return -1, err
+	}
+	result := int64(retpre["i2p.router.uptime"].(float64))
+	return result, nil
+}
+
+// All the known peers
+func KnownPeers() (int, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.netdb.knownpeers": nil,
+		"Token":                       token,
+	})
+	if err != nil {
+		return -1, err
+	}
+	result := int(retpre["i2p.router.netdb.knownpeers"].(float64))
+	return result, nil
+}
+
+// Gets the current router version
+func Version() (string, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.version": nil,
+		"Token":              token,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	result := retpre["i2p.router.version"].(string)
 	return result, nil
 }
