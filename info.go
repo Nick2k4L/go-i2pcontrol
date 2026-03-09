@@ -87,7 +87,7 @@ func Reseeding() (bool, error) {
 	return result, nil
 }
 
-// Incoming bandwidth per second
+// IncomingBW bandwidth per second
 func IncomingBW() (int, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.net.bw.inbound.1s": nil,
@@ -100,7 +100,7 @@ func IncomingBW() (int, error) {
 	return result, nil
 }
 
-// Outgoing bandwidth per second
+// OutgoingBw bandwidth per second
 func OutgoingBw() (int, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.net.bw.outbound.1s": nil,
@@ -113,7 +113,7 @@ func OutgoingBw() (int, error) {
 	return result, nil
 }
 
-// Uptime of the router
+// UpTime of the router
 func UpTime() (int64, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.uptime": nil,
@@ -126,7 +126,7 @@ func UpTime() (int64, error) {
 	return result, nil
 }
 
-// All the known peers
+// KnownPeers All the known peers
 func KnownPeers() (int, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.netdb.knownpeers": nil,
@@ -139,7 +139,21 @@ func KnownPeers() (int, error) {
 	return result, nil
 }
 
-// Gets the current router version
+// ActivePeers All Active peers
+func ActivePeers() (int, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.netdb.activepeers": nil,
+		"Token":                        token,
+	})
+	if err != nil {
+		return -1, err
+	}
+
+	result := int(retpre["i2p.router.netdb.activepeers"].(float64))
+	return result, nil
+}
+
+// Version the current router version
 func Version() (string, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.version": nil,
