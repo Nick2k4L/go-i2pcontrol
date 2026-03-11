@@ -181,17 +181,16 @@ func RouterID() (string, error) {
 	return result, nil
 }
 
-// RouterIDB32 the current router ID in base32
-func RouterIDB32() (string, error) {
+// RouterInfo the current router ID in base64 format
+func RouterInfo() (string, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
-		"i2p.router.id.b32": nil,
-		"Token":             token,
+		"i2p.router.info": nil,
+		"Token":           token,
 	})
 	if err != nil {
 		return "", err
 	}
-
-	result := retpre["i2p.router.id.b32"].(string)
+	result := retpre["i2p.router.info"].(string)
 	return result, nil
 }
 
@@ -294,6 +293,24 @@ func ActivePeersList() ([]string, error) {
 	}
 
 	resultInterface := retpre["i2p.router.netdb.activepeers.list"].([]interface{})
+	result := make([]string, len(resultInterface))
+	for i, v := range resultInterface {
+		result[i] = v.(string)
+	}
+	return result, nil
+}
+
+// ActivePeersInfo gets a list of active peers info
+func ActivePeersInfo() ([]string, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.netdb.activepeers.info": nil,
+		"Token":                             token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	resultInterface := retpre["i2p.router.netdb.activepeers.info"].([]interface{})
 	result := make([]string, len(resultInterface))
 	for i, v := range resultInterface {
 		result[i] = v.(string)
