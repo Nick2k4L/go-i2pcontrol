@@ -317,3 +317,53 @@ func ActivePeersInfo() ([]string, error) {
 	}
 	return result, nil
 }
+
+// AllPeersList gets a list of all known peer hashes
+func AllPeersList() ([]string, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.netdb.peers.list": nil,
+		"Token":                       token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	resultInterface := retpre["i2p.router.netdb.peers.list"].([]interface{})
+	result := make([]string, len(resultInterface))
+	for i, v := range resultInterface {
+		result[i] = v.(string)
+	}
+	return result, nil
+}
+
+// AllPeersInfo gets the raw base64-encoded RouterInfo blobs for all known peers
+func AllPeersInfo() ([]string, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.netdb.peers.info": nil,
+		"Token":                       token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	resultInterface := retpre["i2p.router.netdb.peers.info"].([]interface{})
+	result := make([]string, len(resultInterface))
+	for i, v := range resultInterface {
+		result[i] = v.(string)
+	}
+	return result, nil
+}
+
+// ActivePeersStats gets detailed live stats for all active peer connections
+func ActivePeersStats() ([]interface{}, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.netdb.activepeers.stats": nil,
+		"Token":                              token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	result := retpre["i2p.router.netdb.activepeers.stats"].([]interface{})
+	return result, nil
+}
