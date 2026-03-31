@@ -33,21 +33,21 @@ func RemoveAddressBookEntry(hostname, destination, bookType string) (string, err
 
 // EditAddressBookSubscription edits the subscriptions for the address book.
 // Hostnames is a list of hostnames to subscribe to. It will replace the existing subscriptions.
-func EditAddressBookSubscription(hostnames []string) ([]interface{}, error) {
+func EditAddressBookSubscription(hostnames []string) (string, error) {
 	retpre, err := Call("AddressBook", map[string]interface{}{
 		"SetSubscriptions": hostnames,
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	result := retpre["Subscriptions"].([]interface{})
+	result := retpre["message"].(string)
 
 	return result, nil
 }
 
 // EditConfigFile edits the config file.
-func EditConfigFile(etags, lastFetched, lastModified, localAddressbook, logPath, namingService, privateAddressbook, proxyHost string, proxyPort int, publishedAddressbook, routerAddressbook string, shouldPublish bool, subscriptions string, updateDelay int, updateDirect bool) (map[string]string, error) {
-	ret, err := Call("AddressBook", map[string]interface{}{
+func EditConfigFile(etags, lastFetched, lastModified, localAddressbook, logPath, namingService, privateAddressbook, proxyHost string, proxyPort int, publishedAddressbook, routerAddressbook string, shouldPublish bool, subscriptions string, updateDelay int, updateDirect bool) (string, error) {
+	retpre, err := Call("AddressBook", map[string]interface{}{
 		"SetConfig": map[string]interface{}{
 			"etags": etags, "last_fetched": lastFetched, "last_modified": lastModified,
 			"local_addressbook": localAddressbook, "log": logPath, "naming_service": namingService,
@@ -58,16 +58,8 @@ func EditConfigFile(etags, lastFetched, lastModified, localAddressbook, logPath,
 		},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	raw := ret["Config"].(map[string]interface{})
-	out := make(map[string]string, len(raw))
-	for k, v := range raw {
-		if v == nil {
-			out[k] = ""
-			continue
-		}
-		out[k] = v.(string)
-	}
-	return out, nil
+	result := retpre["message"].(string)
+	return result, nil
 }
