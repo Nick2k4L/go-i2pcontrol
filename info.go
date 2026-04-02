@@ -113,6 +113,32 @@ func OutgoingBw() (int, error) {
 	return result, nil
 }
 
+// TotalOutgoingBW total outgoing bandwidth
+func TotalOutgoingBW() (int, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.net.bw.used.outbound.total": nil,
+		"Token":                                 token,
+	})
+	if err != nil {
+		return -1, err
+	}
+	result := int(retpre["i2p.router.net.bw.used.outbound.total"].(float64))
+	return result, nil
+}
+
+// TotalIncomingBW total incoming bandwidth
+func TotalIncomingBW() (int, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.net.bw.used.inbound.total": nil,
+		"Token":                                token,
+	})
+	if err != nil {
+		return -1, err
+	}
+	result := int(retpre["i2p.router.net.bw.used.inbound.total"].(float64))
+	return result, nil
+}
+
 // UpTime of the router
 func UpTime() (int64, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
