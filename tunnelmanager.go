@@ -2,24 +2,25 @@ package i2pcontrol
 
 type HiddenService struct{}
 
-func GetHiddenService(name string) (map[string]interface{}, error) {
-	return nil, nil
-}
+// ServiceAction performs an action on a tunnel.
+func ServiceAction(name, action string, toAll bool) (string, map[string]interface{}, error) {
+	retpre, err := Call("TunnelManager", map[string]interface{}{
+		"Name":   name,
+		"Action": action,
+		"All":    toAll,
+	})
+	if err != nil {
+		return "", nil, err
+	}
+	var tunnelOptions map[string]interface{}
+	result := retpre["status"].(string)
 
-func DeleteHiddenService(name string) (string, error) {
-	return "", nil
-}
+	// a get action returns the tunnel options, this is the only action that returns them
+	if action == "get" {
+		tunnelOptions = retpre["i2p.router.net.tunnels.i2ptunnel.options"].(map[string]interface{})
+	}
 
-func StopAllServices() (string, error) {
-	return "", nil
-}
-
-func StartAllServices() (string, error) {
-	return "", nil
-}
-
-func RestartAllServices() (string, error) {
-	return "", nil
+	return result, tunnelOptions, nil
 }
 
 func AddHiddenService(service HiddenService) (string, error) {
