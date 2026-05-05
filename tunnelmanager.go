@@ -185,8 +185,16 @@ type ServiceConfig struct {
 	HTTPServerConfig          *HTTPServerConfig
 }
 
-type EditOptions struct {
-	NewName *string
+// if the edit structs grow, create a EditOptions struct and add it to all the edit functions
+
+type EditServiceConfig struct {
+	NewName       *string
+	ServiceConfig ServiceConfig
+}
+
+type EditClientConfig struct {
+	NewName      *string
+	ClientConfig ClientConfig
 }
 
 // TODO: When a function is stopped, for some services we may need to set destination and b32 dest to null
@@ -212,12 +220,12 @@ func ServiceAction(name, action string, toAll bool) (string, map[string]interfac
 }
 
 // EditClientTunnel is the same. Only difference is looking for a NewName param
-func EditClientTunnel(client ClientConfig, editOpts EditOptions) (string, error) {
-	params := setCommonParams(client.CommonSettings, "edit")
-	if editOpts.NewName != nil {
-		addString(params, "NewName", *editOpts.NewName)
+func EditClientTunnel(client EditClientConfig) (string, error) {
+	params := setCommonParams(client.ClientConfig.CommonSettings, "edit")
+	if client.NewName != nil {
+		addString(params, "NewName", *client.NewName)
 	}
-	setClientParams(client, params)
+	setClientParams(client.ClientConfig, params)
 	retpre, err := Call("TunnelManager", params)
 	if err != nil {
 		return "", err
@@ -227,12 +235,12 @@ func EditClientTunnel(client ClientConfig, editOpts EditOptions) (string, error)
 	return result, nil
 }
 
-func EditHiddenService(service ServiceConfig, editOpts EditOptions) (string, error) {
-	params := setCommonParams(service.CommonSettings, "edit")
-	if editOpts.NewName != nil {
-		addString(params, "NewName", *editOpts.NewName)
+func EditHiddenService(service EditServiceConfig) (string, error) {
+	params := setCommonParams(service.ServiceConfig.CommonSettings, "edit")
+	if service.NewName != nil {
+		addString(params, "NewName", *service.NewName)
 	}
-	setServiceParams(service, params)
+	setServiceParams(service.ServiceConfig, params)
 	retpre, err := Call("TunnelManager", params)
 	if err != nil {
 		return "", err
@@ -409,7 +417,10 @@ func setClientParams(client ClientConfig, params map[string]interface{}) {
 
 	addString(params, "ReachableBy", client.ReachableBy)
 	addString(params, "TargetDestination", client.TunnelDestination)
+
 	params["CloseTime"] = client.IdlePeriod
+
+	params["Close"] = client.CloseWhenIdle
 
 	// params["Reduce"] = client.CommonSettings.ReduceIdle
 	// params["ReduceCount"] = client.CommonSettings.ReducedCount
