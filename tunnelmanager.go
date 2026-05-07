@@ -121,9 +121,15 @@ type ClientConfig struct {
 	IRCConfig      *IRCConfig
 }
 
+type LeaseSetClientAuth struct {
+	Name string
+	Key  string
+}
+
 type LeaseSetConfig struct {
-	LeaseSetEnc      string
-	LeaseSetPassword string
+	LeaseSetEnc         string
+	LeaseSetPassword    string
+	LeaseSetClientAuths []LeaseSetClientAuth
 }
 
 type ServerThrottling struct {
@@ -289,7 +295,6 @@ func setCommonParams(common CommonConfig, action string) map[string]interface{} 
 		"Type":        common.Type,
 		"Reduce":      common.ReduceIdle,
 	}
-
 	addString(params, "Description", common.Description)
 	addString(params, "CustomOptions", common.CustomOptions)
 
@@ -315,44 +320,27 @@ func setCommonParams(common CommonConfig, action string) map[string]interface{} 
 }
 
 func setServiceParams(service ServiceConfig, params map[string]interface{}) {
-	//params := map[string]interface{}{
-	//	"Action":      "create",
-	//	"Name":        service.CommonSettings.Name,
-	//	"StartOnLoad": service.CommonSettings.AutoStart,
-	//	"UseSSL":      service.CommonSettings.SSL,
-	//	"Port":        service.CommonSettings.Port,
-	//	"Type":        service.CommonSettings.Type,
-	//	"Reduce":      service.CommonSettings.ReduceIdle,
-	//}
-
-	// addString(params, "Description", service.CommonSettings.Description)
-	// addString(params, "CustomOptions", service.CommonSettings.CustomOptions)
 	addString(params, "PrivKeyFile", service.PrivateKeyFile)
 	addString(params, "TargetHost", service.Host)
 	addString(params, "Profile", service.Profile)
 	params["ConnectDelay"] = service.ConnectDelay
 
 	params["TargetPort"] = service.TargetPort
-	//params["ReduceCount"] = service.CommonSettings.ReducedCount
-	//params["ReduceTime"] = service.CommonSettings.IdleTime
-	//
-	//if tunnelLength := service.CommonSettings.TunnelLength; tunnelLength != nil {
-	//	params["TunnelLength"] = tunnelLength.Length
-	//	params["TunnelVariance"] = tunnelLength.Variance
-	//}
-	//
-	//if tunnelQuantity := service.CommonSettings.TunnelQuantity; tunnelQuantity != nil {
-	//	params["TunnelQuantity"] = tunnelQuantity.Quantity
-	//	params["TunnelBackupQuantity"] = tunnelQuantity.Backup
-	//}
-	//
-	//if tunnelCrypto := service.CommonSettings.TunnelCrypto; tunnelCrypto != nil {
-	//	addString(params, "SigType", tunnelCrypto.SigType)
-	//	addString(params, "EncType", tunnelCrypto.EncType)
-	//}
 
 	addString(params, "EncryptLeaseSet", service.LeaseSetConfig.LeaseSetEnc)
 	addString(params, "OptionalLookup", service.LeaseSetConfig.LeaseSetPassword)
+	if len(service.LeaseSetConfig.LeaseSetClientAuths) > 0 {
+		auths := make([]map[string]string, 0, len(service.LeaseSetConfig.LeaseSetClientAuths))
+		for _, auth := range service.LeaseSetConfig.LeaseSetClientAuths {
+			auths = append(auths, map[string]string{
+				"Name": auth.Name,
+				"Key":  auth.Key,
+			})
+		}
+		params["LeaseSetClientAuths"] = auths
+	} else {
+		delete(params, "LeaseSetClientAuths")
+	}
 
 	params["MaxConcurrentConns"] = service.ServerThrottling.MaxConcurrentConnections
 	params["ClientPerMinute"] = service.ServerThrottling.PerClientMinuteLimit
@@ -410,9 +398,6 @@ func setClientParams(client ClientConfig, params map[string]interface{}) {
 		addString(params, "OutproxyPassword", auth.OutProxyAuthPassword)
 	}
 
-	// addString(params, "Description", client.CommonSettings.Description)
-	// addString(params, "CustomOptions", client.CommonSettings.CustomOptions)
-
 	addString(params, "PrivKeyFile", client.PersistentPrivateKeyFile)
 
 	addString(params, "ReachableBy", client.ReachableBy)
@@ -421,10 +406,6 @@ func setClientParams(client ClientConfig, params map[string]interface{}) {
 	params["CloseTime"] = client.IdlePeriod
 
 	params["Close"] = client.CloseWhenIdle
-
-	// params["Reduce"] = client.CommonSettings.ReduceIdle
-	// params["ReduceCount"] = client.CommonSettings.ReducedCount
-	// params["ReduceTime"] = client.CommonSettings.IdleTime
 
 	if client.GenerateKeys {
 		params["NewDest"] = 0
@@ -438,22 +419,6 @@ func setClientParams(client ClientConfig, params map[string]interface{}) {
 		params["NewDest"] = 2
 		params["PersistentClientKey"] = true
 	}
-
-	// These fields should never be null, we need to have the JAVA API return default values if someone does not pass them in
-	//if tunnelLength := client.CommonSettings.TunnelLength; tunnelLength != nil {
-	//	params["TunnelLength"] = tunnelLength.Length
-	//	params["TunnelVariance"] = tunnelLength.Variance
-	//}
-	//
-	//if tunnelQuantity := client.CommonSettings.TunnelQuantity; tunnelQuantity != nil {
-	//	params["TunnelQuantity"] = tunnelQuantity.Quantity
-	//	params["TunnelBackupQuantity"] = tunnelQuantity.Backup
-	//}
-	//
-	//if tunnelCrypto := client.CommonSettings.TunnelCrypto; tunnelCrypto != nil {
-	//	addString(params, "SigType", tunnelCrypto.SigType)
-	//	addString(params, "EncType", tunnelCrypto.EncType)
-	//}
 
 	if standard := client.STANDARDConfig; standard != nil {
 		addString(params, "Profile", standard.ProfileConfig.Profile)
