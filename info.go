@@ -492,7 +492,7 @@ func BannedPeers() (map[string]interface{}, error) {
 	return retpre["i2p.router.netdb.bannedpeers"].(map[string]interface{}), nil
 }
 
-func RouterLogs() ([]interface{}, error) {
+func RouterLogs() ([]string, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
 		"i2p.router.logs": nil,
 		"Token":           token,
@@ -500,7 +500,12 @@ func RouterLogs() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	result := retpre["i2p.router.logs"].([]interface{})
+	resultInterface := retpre["i2p.router.logs"].([]interface{})
+	result := make([]string, len(resultInterface))
+
+	for i, v := range resultInterface {
+		result[i] = v.(string)
+	}
 
 	return result, nil
 }
