@@ -492,6 +492,31 @@ func BannedPeers() (map[string]interface{}, error) {
 	return retpre["i2p.router.netdb.bannedpeers"].(map[string]interface{}), nil
 }
 
+func RouterLogs() ([]interface{}, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.logs": nil,
+		"Token":           token,
+	})
+	if err != nil {
+		return nil, err
+	}
+	result := retpre["i2p.router.logs"].([]interface{})
+
+	return result, nil
+}
+
+func ClearRouterLogs() (string, error) {
+	retpre, err := Call("RouterInfo", map[string]interface{}{
+		"i2p.router.logs.clear": nil,
+		"Token":                 token,
+	})
+	if err != nil {
+		return "", err
+	}
+	result := retpre["i2p.router.logs.clear"].(string)
+	return result, nil
+}
+
 // ActivePeersStats gets detailed live stats for all active peer connections
 func ActivePeersStats() ([]interface{}, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
