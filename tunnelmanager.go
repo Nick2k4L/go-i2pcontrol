@@ -211,6 +211,7 @@ func ServiceAction(name, action string, toAll bool) (string, map[string]interfac
 		"Name":   name,
 		"Action": action,
 		"All":    toAll,
+		"Token":  token,
 	})
 	if err != nil {
 		return "", nil, err
@@ -294,6 +295,7 @@ func setCommonParams(common CommonConfig, action string) map[string]interface{} 
 		"Port":        common.Port,
 		"Type":        common.Type,
 		"Reduce":      common.ReduceIdle,
+		"Token":       token,
 	}
 	addString(params, "Description", common.Description)
 	addString(params, "CustomOptions", common.CustomOptions)
