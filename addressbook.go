@@ -8,6 +8,7 @@ func AddAddressBookEntry(hostname, destination, bookType string) (string, error)
 		"Hostname":    hostname,
 		"Destination": destination,
 		"Type":        bookType,
+		"Token":       token,
 	})
 	if err != nil {
 		return "", err
@@ -23,6 +24,7 @@ func RemoveAddressBookEntry(hostname, destination, bookType string) (string, err
 		"Destination": destination,
 		"Type":        bookType,
 		"Delete":      "",
+		"Token":       token,
 	})
 	if err != nil {
 		return "", err
@@ -36,6 +38,7 @@ func RemoveAddressBookEntry(hostname, destination, bookType string) (string, err
 func EditAddressBookSubscription(hostnames []string) (string, error) {
 	retpre, err := Call("AddressBook", map[string]interface{}{
 		"SetSubscriptions": hostnames,
+		"Token":            token,
 	})
 	if err != nil {
 		return "", err
@@ -48,6 +51,7 @@ func EditAddressBookSubscription(hostnames []string) (string, error) {
 // EditConfigFile edits the config file.
 func EditConfigFile(etags, lastFetched, lastModified, localAddressbook, logPath, namingService, privateAddressbook, proxyHost string, proxyPort int, publishedAddressbook, routerAddressbook string, shouldPublish bool, subscriptions string, updateDelay int, updateDirect bool) (string, error) {
 	retpre, err := Call("AddressBook", map[string]interface{}{
+		"Token": token,
 		"SetConfig": map[string]interface{}{
 			"etags": etags, "last_fetched": lastFetched, "last_modified": lastModified,
 			"local_addressbook": localAddressbook, "log": logPath, "naming_service": namingService,
