@@ -3,6 +3,7 @@ package i2pcontrol
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -69,6 +70,13 @@ func Call(method string, params interface{}) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if method == "AddressBook" || method == "RouterInfo" || method == "TunnelManager" {
+		if len(retpre) == 0 {
+			return nil, fmt.Errorf("error - empty response from RPC call, implementation pending Prop170 I2PControl Extensions")
+		}
+	}
+
 	return retpre, nil
 }
 
