@@ -9,7 +9,11 @@ func Echo(echo string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := retpre["Result"].(string)
+	value, err := responseValue(retpre, "Result")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -70,7 +74,11 @@ func FindUpdates() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	result := retpre["FindUpdates"].(bool)
+	value, err := responseValue(retpre, "FindUpdates")
+	if err != nil {
+		return false, err
+	}
+	result := value.(bool)
 	return result, nil
 }
 

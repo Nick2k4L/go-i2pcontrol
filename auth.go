@@ -57,9 +57,16 @@ func InitializeWithSelfSignedCert(host, port, path, cert string) error {
 
 // Call an RPC method with params
 func Call(method string, params interface{}) (map[string]interface{}, error) {
+	if rpcClient == nil {
+		return nil, fmt.Errorf("RPC client is not initialized")
+	}
+
 	response, err := rpcClient.Call(method, params)
 	if err != nil {
 		return nil, err
+	}
+	if response == nil {
+		return nil, fmt.Errorf("empty response from RPC call")
 	}
 	if response.Error != nil {
 		return nil, response.Error
@@ -89,7 +96,16 @@ func Authenticate(password string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	token = retpre["Token"].(string)
-	version := int(retpre["API"].(float64))
+	value, err := responseValue(retpre, "Token")
+	if err != nil {
+		return -1, err
+	}
+	nextToken := value.(string)
+	value, err = responseValue(retpre, "API")
+	if err != nil {
+		return -1, err
+	}
+	version := int(value.(float64))
+	token = nextToken
 	return version, nil
 }

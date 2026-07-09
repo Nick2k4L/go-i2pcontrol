@@ -217,10 +217,18 @@ func ServiceAction(name, action string, toAll bool) (string, map[string]interfac
 		return "", nil, err
 	}
 	var tunnelOptions map[string]interface{}
-	result := retpre["status"].(string)
+	value, err := responseValue(retpre, "status")
+	if err != nil {
+		return "", nil, err
+	}
+	result := value.(string)
 	// a get action returns the tunnel options; this is the only action that returns them
 	if action == "get" {
-		tunnelOptions = retpre["info"].(map[string]interface{})
+		value, err = responseValue(retpre, "info")
+		if err != nil {
+			return "", nil, err
+		}
+		tunnelOptions = value.(map[string]interface{})
 	}
 
 	return result, tunnelOptions, nil
@@ -238,7 +246,11 @@ func EditClientTunnel(client EditClientConfig) (string, error) {
 		return "", err
 	}
 
-	result := retpre["status"].(string)
+	value, err := responseValue(retpre, "status")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -253,7 +265,11 @@ func EditHiddenService(service EditServiceConfig) (string, error) {
 		return "", err
 	}
 
-	result := retpre["status"].(string)
+	value, err := responseValue(retpre, "status")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -268,7 +284,11 @@ func AddClientTunnel(client ClientConfig) (string, error) {
 		return "", err
 	}
 
-	result := retpre["status"].(string)
+	value, err := responseValue(retpre, "status")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -282,7 +302,11 @@ func AddHiddenService(service ServiceConfig) (string, error) {
 		return "", err
 	}
 
-	result := retpre["status"].(string)
+	value, err := responseValue(retpre, "status")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 

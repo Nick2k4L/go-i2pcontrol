@@ -11,7 +11,11 @@ func ParticipatingTunnels() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.net.tunnels.participating"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.participating")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -24,7 +28,11 @@ func Status() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := retpre["i2p.router.status"].(string)
+	value, err := responseValue(retpre, "i2p.router.status")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -37,7 +45,11 @@ func NetStatus() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := int(retpre["i2p.router.net.status"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.status")
+	if err != nil {
+		return "", err
+	}
+	result := int(value.(float64))
 	switch result {
 	case 0:
 		return "OK", nil
@@ -83,6 +95,10 @@ func Reseeding() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	result := retpre["i2p.router.netdb.isreseeding"].(bool)
+	value, err := responseValue(retpre, "i2p.router.netdb.isreseeding")
+	if err != nil {
+		return false, err
+	}
+	result := value.(bool)
 	return result, nil
 }

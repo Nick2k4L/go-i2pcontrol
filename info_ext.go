@@ -1,5 +1,7 @@
 package i2pcontrol
 
+import "fmt"
+
 // IncomingBW bandwidth per second
 func IncomingBW() (int, error) {
 	retpre, err := Call("RouterInfo", map[string]interface{}{
@@ -9,7 +11,11 @@ func IncomingBW() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.net.bw.inbound.1s"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.bw.inbound.1s")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -22,7 +28,11 @@ func OutgoingBw() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.net.bw.outbound.1s"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.bw.outbound.1s")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -35,7 +45,11 @@ func TotalOutgoingBW() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.net.bw.used.outbound.total"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.bw.used.outbound.total")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -48,7 +62,11 @@ func TotalIncomingBW() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.net.bw.used.inbound.total"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.bw.used.inbound.total")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -61,7 +79,11 @@ func UpTime() (int64, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int64(retpre["i2p.router.uptime"].(float64))
+	value, err := responseValue(retpre, "i2p.router.uptime")
+	if err != nil {
+		return -1, err
+	}
+	result := int64(value.(float64))
 	return result, nil
 }
 
@@ -74,7 +96,11 @@ func KnownPeers() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.netdb.knownpeers"].(float64))
+	value, err := responseValue(retpre, "i2p.router.netdb.knownpeers")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -88,7 +114,11 @@ func ActivePeers() (int, error) {
 		return -1, err
 	}
 
-	result := int(retpre["i2p.router.netdb.activepeers"].(float64))
+	value, err := responseValue(retpre, "i2p.router.netdb.activepeers")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -102,7 +132,11 @@ func Version() (string, error) {
 		return "", err
 	}
 
-	result := retpre["i2p.router.version"].(string)
+	value, err := responseValue(retpre, "i2p.router.version")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -116,7 +150,11 @@ func RouterID() (string, error) {
 		return "", err
 	}
 
-	result := retpre["i2p.router.id"].(string)
+	value, err := responseValue(retpre, "i2p.router.id")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -129,7 +167,11 @@ func RouterInfo() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := retpre["i2p.router.info"].(string)
+	value, err := responseValue(retpre, "i2p.router.info")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -143,7 +185,11 @@ func ClockSkew() (int, error) {
 		return -1, err
 	}
 
-	result := int(retpre["i2p.router.clockskew"].(float64))
+	value, err := responseValue(retpre, "i2p.router.clockskew")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -157,7 +203,11 @@ func InboundExploratoryTunnels() (int, error) {
 		return -1, err
 	}
 
-	result := int(retpre["i2p.router.net.tunnels.exploratory.inbound"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.exploratory.inbound")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -171,7 +221,11 @@ func OutboundExploratoryTunnels() (int, error) {
 		return -1, err
 	}
 
-	result := int(retpre["i2p.router.net.tunnels.exploratory.outbound"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.exploratory.outbound")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -184,7 +238,11 @@ func ExploratoryTunnelsInfo() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.net.tunnels.exploratory.info.list"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.exploratory.info.list")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // ClientTunnelsInfo gets the client tunnels info
@@ -196,7 +254,11 @@ func ClientTunnelsInfo() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.net.tunnels.client.info.list"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.client.info.list")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // ShareRatio gets the share ratio of the router
@@ -208,7 +270,12 @@ func ShareRatio() (float64, error) {
 	if err != nil {
 		return -1, err
 	}
-	return retpre["i2p.router.net.tunnels.shareratio"].(float64), nil
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.shareratio")
+	if err != nil {
+		return -1, err
+	}
+	result := value.(float64)
+	return result, nil
 }
 
 // ParticipatingTunnelsCount gets the number of participating tunnels (inactive + active)
@@ -220,7 +287,11 @@ func ParticipatingTunnelsCount() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.net.tunnels.participating"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.participating")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -233,7 +304,11 @@ func ParticipatingTunnelsInfo() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.net.tunnels.participating.info"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.participating.info")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // InboundClientTunnels gets the number of inbound client tunnels
@@ -246,7 +321,11 @@ func InboundClientTunnels() (int, error) {
 		return -1, err
 	}
 
-	result := int(retpre["i2p.router.net.tunnels.client.inbound"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.client.inbound")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -260,7 +339,11 @@ func OutboundClientTunnels() (int, error) {
 		return -1, err
 	}
 
-	result := int(retpre["i2p.router.net.tunnels.client.outbound"].(float64))
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.client.outbound")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -274,9 +357,16 @@ func KnownPeersList() ([]string, error) {
 		return nil, err
 	}
 
-	resultInterface := retpre["i2p.router.netdb.peers"].([]interface{})
+	value, err := responseValue(retpre, "i2p.router.netdb.peers")
+	if err != nil {
+		return nil, err
+	}
+	resultInterface := value.([]interface{})
 	result := make([]string, len(resultInterface))
 	for i, v := range resultInterface {
+		if v == nil {
+			return nil, fmt.Errorf("RPC response field %q[%d] is nil", "i2p.router.netdb.peers", i)
+		}
 		result[i] = v.(string)
 	}
 	return result, nil
@@ -292,9 +382,16 @@ func ActivePeersList() ([]string, error) {
 		return nil, err
 	}
 
-	resultInterface := retpre["i2p.router.netdb.activepeers.list"].([]interface{})
+	value, err := responseValue(retpre, "i2p.router.netdb.activepeers.list")
+	if err != nil {
+		return nil, err
+	}
+	resultInterface := value.([]interface{})
 	result := make([]string, len(resultInterface))
 	for i, v := range resultInterface {
+		if v == nil {
+			return nil, fmt.Errorf("RPC response field %q[%d] is nil", "i2p.router.netdb.activepeers.list", i)
+		}
 		result[i] = v.(string)
 	}
 	return result, nil
@@ -310,9 +407,16 @@ func ActivePeersInfo() ([]string, error) {
 		return nil, err
 	}
 
-	resultInterface := retpre["i2p.router.netdb.activepeers.info"].([]interface{})
+	value, err := responseValue(retpre, "i2p.router.netdb.activepeers.info")
+	if err != nil {
+		return nil, err
+	}
+	resultInterface := value.([]interface{})
 	result := make([]string, len(resultInterface))
 	for i, v := range resultInterface {
+		if v == nil {
+			return nil, fmt.Errorf("RPC response field %q[%d] is nil", "i2p.router.netdb.activepeers.info", i)
+		}
 		result[i] = v.(string)
 	}
 	return result, nil
@@ -328,9 +432,16 @@ func AllPeersList() ([]string, error) {
 		return nil, err
 	}
 
-	resultInterface := retpre["i2p.router.netdb.peers.list"].([]interface{})
+	value, err := responseValue(retpre, "i2p.router.netdb.peers.list")
+	if err != nil {
+		return nil, err
+	}
+	resultInterface := value.([]interface{})
 	result := make([]string, len(resultInterface))
 	for i, v := range resultInterface {
+		if v == nil {
+			return nil, fmt.Errorf("RPC response field %q[%d] is nil", "i2p.router.netdb.peers.list", i)
+		}
 		result[i] = v.(string)
 	}
 	return result, nil
@@ -346,9 +457,16 @@ func AllPeersInfo() ([]string, error) {
 		return nil, err
 	}
 
-	resultInterface := retpre["i2p.router.netdb.peers.info"].([]interface{})
+	value, err := responseValue(retpre, "i2p.router.netdb.peers.info")
+	if err != nil {
+		return nil, err
+	}
+	resultInterface := value.([]interface{})
 	result := make([]string, len(resultInterface))
 	for i, v := range resultInterface {
+		if v == nil {
+			return nil, fmt.Errorf("RPC response field %q[%d] is nil", "i2p.router.netdb.peers.info", i)
+		}
 		result[i] = v.(string)
 	}
 	return result, nil
@@ -363,7 +481,11 @@ func NTCPLimit() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.netdb.ntcp.limit"].(float64))
+	value, err := responseValue(retpre, "i2p.router.netdb.ntcp.limit")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -376,7 +498,11 @@ func SSULimit() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	result := int(retpre["i2p.router.netdb.ssu.limit"].(float64))
+	value, err := responseValue(retpre, "i2p.router.netdb.ssu.limit")
+	if err != nil {
+		return -1, err
+	}
+	result := int(value.(float64))
 	return result, nil
 }
 
@@ -389,7 +515,11 @@ func NewsEntries() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := retpre["i2p.router.news"].(string)
+	value, err := responseValue(retpre, "i2p.router.news")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -402,7 +532,11 @@ func BannedPeers() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.netdb.bannedpeers"].(map[string]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.netdb.bannedpeers")
+	if err != nil {
+		return nil, err
+	}
+	return value.(map[string]interface{}), nil
 }
 
 func RouterLogs() ([]string, error) {
@@ -413,10 +547,17 @@ func RouterLogs() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	resultInterface := retpre["i2p.router.logs"].([]interface{})
+	value, err := responseValue(retpre, "i2p.router.logs")
+	if err != nil {
+		return nil, err
+	}
+	resultInterface := value.([]interface{})
 	result := make([]string, len(resultInterface))
 
 	for i, v := range resultInterface {
+		if v == nil {
+			return nil, fmt.Errorf("RPC response field %q[%d] is nil", "i2p.router.logs", i)
+		}
 		result[i] = v.(string)
 	}
 
@@ -431,7 +572,11 @@ func ClearRouterLogs() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := retpre["i2p.router.logs.clear"].(string)
+	value, err := responseValue(retpre, "i2p.router.logs.clear")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -445,8 +590,11 @@ func ActivePeersStats() ([]interface{}, error) {
 		return nil, err
 	}
 
-	result := retpre["i2p.router.netdb.activepeers.stats"].([]interface{})
-	return result, nil
+	value, err := responseValue(retpre, "i2p.router.netdb.activepeers.stats")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // PrivateAddressBook gets the list of private address book entries
@@ -459,7 +607,11 @@ func PrivateAddressBook() ([]interface{}, error) {
 		return nil, err
 	}
 
-	return retpre["i2p.router.addressbook.private.list"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.addressbook.private.list")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // LocalAddressBook gets the list of local address book entries
@@ -472,7 +624,11 @@ func LocalAddressBook() ([]interface{}, error) {
 		return nil, err
 	}
 
-	return retpre["i2p.router.addressbook.local.list"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.addressbook.local.list")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // RouterAddressBook gets the list of router address book entries
@@ -484,7 +640,11 @@ func RouterAddressBook() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.addressbook.router.list"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.addressbook.router.list")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // PublishedAddressBook gets the list of published address book entries
@@ -496,7 +656,11 @@ func PublishedAddressBook() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.addressbook.published.list"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.addressbook.published.list")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }
 
 // AddressBookConfig gets the address book configuration, including the path and entries
@@ -509,7 +673,11 @@ func AddressBookConfig() ([]interface{}, error) {
 		return nil, err
 	}
 
-	raw := retpre["i2p.router.addressbook.config"].(map[string]interface{})
+	value, err := responseValue(retpre, "i2p.router.addressbook.config")
+	if err != nil {
+		return nil, err
+	}
+	raw := value.(map[string]interface{})
 	path := raw["path"]
 	entries := raw["entries"]
 
@@ -528,7 +696,11 @@ func AddressBookSubscriptions() ([]interface{}, error) {
 		return nil, err
 	}
 
-	raw := retpre["i2p.router.addressbook.subscriptions"].(map[string]interface{})
+	value, err := responseValue(retpre, "i2p.router.addressbook.subscriptions")
+	if err != nil {
+		return nil, err
+	}
+	raw := value.(map[string]interface{})
 	path := raw["path"]
 	entries := raw["entries"]
 
@@ -545,5 +717,9 @@ func HiddenServices() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return retpre["i2p.router.net.tunnels.i2ptunnel"].([]interface{}), nil
+	value, err := responseValue(retpre, "i2p.router.net.tunnels.i2ptunnel")
+	if err != nil {
+		return nil, err
+	}
+	return value.([]interface{}), nil
 }

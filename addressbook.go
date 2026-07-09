@@ -13,7 +13,11 @@ func AddAddressBookEntry(hostname, destination, bookType string) (string, error)
 	if err != nil {
 		return "", err
 	}
-	result := retpre["message"].(string)
+	value, err := responseValue(retpre, "message")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -29,7 +33,11 @@ func RemoveAddressBookEntry(hostname, destination, bookType string) (string, err
 	if err != nil {
 		return "", err
 	}
-	result := retpre["message"].(string)
+	value, err := responseValue(retpre, "message")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
 
@@ -43,7 +51,11 @@ func EditAddressBookSubscription(hostnames []string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	result := retpre["message"].(string)
+	value, err := responseValue(retpre, "message")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 
 	return result, nil
 }
@@ -64,6 +76,10 @@ func EditConfigFile(etags, lastFetched, lastModified, localAddressbook, logPath,
 	if err != nil {
 		return "", err
 	}
-	result := retpre["message"].(string)
+	value, err := responseValue(retpre, "message")
+	if err != nil {
+		return "", err
+	}
+	result := value.(string)
 	return result, nil
 }
