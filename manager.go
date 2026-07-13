@@ -41,6 +41,17 @@ func Restart() (string, error) {
 	return "Restart Initiated", nil
 }
 
+func Reseed() (string, error) {
+	_, err := Call("RouterManager", map[string]interface{}{
+		"Reseed": nil,
+		"Token":  token,
+	})
+	if err != nil {
+		return "", err
+	}
+	return "Reseed Initiated", nil
+}
+
 // Shutdown initiates a graceful restart, which will occur in around 11 minutes.
 func ShutdownGraceful() (string, error) {
 	_, err := Call("RouterManager", map[string]interface{}{
